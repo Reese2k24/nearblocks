@@ -2,7 +2,7 @@ import { Queue, WorkerOptions } from 'bullmq';
 import { RedisOptions } from 'nb-redis';
 import redis from '#libs/redis';
 
-const DELAY = 10 * 1000; // 10 sec
+const DELAY = 10 * 1000; 
 
 export const emailQueue = new Queue('email', {
   connection: {
