@@ -2,25 +2,23 @@ import crypto from 'node:crypto';
 
 import { Response } from 'express';
 
-import db from '#libs/db';
-import jwt from '#libs/jwt';
-import hash from '#libs/hash';
-import dayjs from '#libs/dayjs';
 import catchAsync from '#libs/async';
+import dayjs from '#libs/dayjs';
+import db from '#libs/db';
+import hash from '#libs/hash';
+import jwt from '#libs/jwt';
 import { emailQueue } from '#libs/queue';
-// import { VerificationKind } from '#ts/enums';
-// import { RequestValidator } from '#ts/types';
-import { keyBinder, validationErrors } from '#libs/utils';
 import {
-  Login,
-  Reset,
-  Resend,
-  Verify,
   Forgot,
+  Login,
   Register,
+  Resend,
+  Reset,
+  Verify,
 } from '#libs/schema/auth';
-import { RequestValidator } from '#types/types';
+import { keyBinder, validationErrors } from '#libs/utils';
 import { VerificationKind } from '#types/enums';
+import { RequestValidator } from '#types/types';
 
 const login = catchAsync(
   async (req: RequestValidator<Login>, res: Response) => {
@@ -47,16 +45,19 @@ const login = catchAsync(
     if (!user)
       return res.status(422).json(
         validationErrors([
-          { path: 'username_or_email', message: 'Invalid username or email' },
-          { path: 'password', message: 'Invalid username or password' },
+          { message: 'Invalid username or email', path: 'username_or_email' },
+          { message: 'Invalid username or password', path: 'password' },
         ]),
       );
 
     if (!hash.verify(password, user.salt, user.password))
       return res.status(422).json(
         validationErrors([
-          { path: 'username_or_email', message: 'Invalid username or password' },
-          { path: 'password', message: 'Invalid username or password' },
+          {
+            message: 'Invalid username or password',
+            path: 'username_or_email',
+          },
+          { message: 'Invalid username or password', path: 'password' },
         ]),
       );
 
@@ -74,7 +75,7 @@ const login = catchAsync(
         WHERE
           id = :id
       `,
-      { id: user.id, date },
+      { date, id: user.id },
     );
 
     await db.query(query, values);
@@ -114,7 +115,7 @@ const register = catchAsync(
         .status(422)
         .json(
           validationErrors([
-            { path: 'email', message: 'Email already in use' },
+            { message: 'Email already in use', path: 'email' },
           ]),
         );
 
@@ -141,7 +142,7 @@ const register = catchAsync(
         .status(422)
         .json(
           validationErrors([
-            { path: 'username', message: 'Username already in use' },
+            { message: 'Username already in use', path: 'username' },
           ]),
         );
 
@@ -174,7 +175,7 @@ const register = catchAsync(
           )
           RETURNING *
         `,
-        { email, username, hashedPassword, salt, date },
+        { date, email, hashedPassword, salt, username },
       );
 
       const userResp = await client.query(userQuery.query, userQuery.values);
@@ -201,11 +202,11 @@ const register = catchAsync(
             :expires
           )
         `,
-        { user: user.id, type, email, code, date, expires },
+        { code, date, email, expires, type, user: user.id },
       );
 
       await client.query(verifyQuery.query, verifyQuery.values);
-      await emailQueue.add(type, { email, code });
+      await emailQueue.add(type, { code, email });
 
       // DB Transaction Commit
       await client.query('COMMIT');
@@ -243,9 +244,9 @@ const resend = catchAsync(
     if (!verify)
       return res
         .status(422)
-        .json(validationErrors([{ path: 'email', message: 'Invalid email' }]));
+        .json(validationErrors([{ message: 'Invalid email', path: 'email' }]));
 
-    await emailQueue.add(verify.type, { email, code: verify.code });
+    await emailQueue.add(verify.type, { code: verify.code, email });
 
     return res.status(200).end();
   },
@@ -269,7 +270,7 @@ const verify = catchAsync(
           AND v.email = :email
           AND v.code = :code
       `,
-      { type, email, code },
+      { code, email, type },
     );
 
     const userResp = await db.query(userQuery.query, userQuery.values);
@@ -278,8 +279,8 @@ const verify = catchAsync(
     if (!user)
       return res.status(422).json(
         validationErrors([
-          { path: 'email', message: 'Invalid email or verification code' },
-          { path: 'code', message: 'Invalid email or verification code' },
+          { message: 'Invalid email or verification code', path: 'email' },
+          { message: 'Invalid email or verification code', path: 'code' },
         ]),
       );
 
@@ -361,7 +362,7 @@ const forgot = catchAsync(
         WHERE
           u.email = :email
       `,
-      { type, email },
+      { email, type },
     );
 
     const userResp = await db.query(userQuery.query, userQuery.values);
@@ -370,7 +371,7 @@ const forgot = catchAsync(
     if (!user)
       return res
         .status(422)
-        .json(validationErrors([{ path: 'email', message: 'Invalid email' }]));
+        .json(validationErrors([{ message: 'Invalid email', path: 'email' }]));
 
     let code: string;
 
@@ -398,14 +399,13 @@ const forgot = catchAsync(
             :expires
           )
         `,
-        { user: user.id, type, email, code, date, expires },
+        { code, date, email, expires, type, user: user.id },
       );
 
       await db.query(verifyQuery.query, verifyQuery.values);
-
     }
 
-    await emailQueue.add(type, { email, code });
+    await emailQueue.add(type, { code, email });
 
     return res.status(200).end();
   },
@@ -431,7 +431,7 @@ const reset = catchAsync(
           AND v.email = :email
           AND v.code = :code
       `,
-      { type, email, code },
+      { code, email, type },
     );
 
     const userResp = await db.query(userQuery.query, userQuery.values);
@@ -440,8 +440,8 @@ const reset = catchAsync(
     if (!user)
       return res.status(422).json(
         validationErrors([
-          { path: 'email', message: 'Invalid email or verification code' },
-          { path: 'code', message: 'Invalid email or verification code' },
+          { message: 'Invalid email or verification code', path: 'email' },
+          { message: 'Invalid email or verification code', path: 'code' },
         ]),
       );
 
@@ -464,7 +464,7 @@ const reset = catchAsync(
           WHERE
             id = :id
         `,
-        { id: user.id, password: hashedPassword, salt, date },
+        { date, id: user.id, password: hashedPassword, salt },
       );
 
       await client.query(updateQuery.query, updateQuery.values);
@@ -495,4 +495,4 @@ const reset = catchAsync(
   },
 );
 
-export default { login, register, resend, verify, forgot, reset };
+export default { forgot, login, register, resend, reset, verify };

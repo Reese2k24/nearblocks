@@ -1,12 +1,13 @@
 import { Worker } from 'bullmq';
 
-import app from './app.js';
 import config from '#config';
-import redis from '#libs/redis';
 import logger from '#libs/logger';
-import sentry from '#libs/sentry';
 import { emailQueueOptions } from '#libs/queue';
+import redis from '#libs/redis';
+import sentry from '#libs/sentry';
 import emailJob from '#services/queues/email';
+
+import app from './app.js';
 
 const emailWorker = new Worker('email', emailJob, emailQueueOptions);
 
@@ -14,7 +15,7 @@ app.listen(config.port, async () => {
   logger.info(`server listening on port ${config.port}`);
 });
 
-const onSignal = (signal: string | number) => {
+const onSignal = (signal: number | string) => {
   const handler = async () => {
     await redis.quit();
     await sentry.close(1000);

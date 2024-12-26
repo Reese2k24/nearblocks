@@ -2,16 +2,16 @@ import { z } from 'zod';
 
 const register = z
   .object({
+    confirm_email: z.string().email(),
+    confirm_password: z.string().trim().min(8).max(100),
+    email: z.string().email(),
+    password: z.string().trim().min(8).max(100),
     username: z
       .string()
       .trim()
       .min(5)
       .max(30)
       .regex(/^[a-z0-9]+$/i, 'Invalid username'),
-    email: z.string().email(),
-    confirm_email: z.string().email(),
-    password: z.string().trim().min(8).max(100),
-    confirm_password: z.string().trim().min(8).max(100),
   })
   .refine((data) => data.email === data.confirm_email, {
     message: "Emails don't match",
@@ -27,17 +27,14 @@ const resend = z.object({
 });
 
 const verify = z.object({
-  email: z.string().email(),
   code: z.string().max(32),
+  email: z.string().email(),
 });
 
 const login = z.object({
-  username_or_email: z
-    .string()
-    .trim()
-    .min(5),
   password: z.string().trim().min(8).max(100),
   remember: z.boolean().optional(),
+  username_or_email: z.string().trim().min(5),
 });
 
 const forgot = z.object({
@@ -46,10 +43,10 @@ const forgot = z.object({
 
 const reset = z
   .object({
-    email: z.string().email(),
     code: z.string().max(32),
-    password: z.string().trim().min(8).max(100),
     confirm_password: z.string().trim().min(8).max(100),
+    email: z.string().email(),
+    password: z.string().trim().min(8).max(100),
   })
   .refine((data) => data.password === data.confirm_password, {
     message: "Passwords don't match",
@@ -63,4 +60,4 @@ export type Login = z.infer<typeof login>;
 export type Forgot = z.infer<typeof forgot>;
 export type Reset = z.infer<typeof reset>;
 
-export default { register, resend, verify, login, forgot, reset };
+export default { forgot, login, register, resend, reset, verify };

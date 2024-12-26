@@ -13,19 +13,19 @@ export type Config = {
   apiUrl: string;
   awsUrl: string;
   dbUrl: string;
-  port: number;
   jwtSecret: string;
-  redisUrl: string;
-  sentryDsn?: string;
-  smtpHost: string;
-  smtpPort: number;
-  smtpUser: string;
-  smtpPass: string;
-  smtpMail: string;
+  port: number;
   redisPassword: string;
   redisSentinelName: string;
   redisSentinelPassword: string;
   redisSentinelUrls: string;
+  redisUrl: string;
+  sentryDsn?: string;
+  smtpHost: string;
+  smtpMail: string;
+  smtpPass: string;
+  smtpPort: number;
+  smtpUser: string;
 };
 
 export type Campaign = {
@@ -48,49 +48,49 @@ export type Campaign = {
 };
 
 export type User = {
-  id: number;
-  stripe_cid?: string;
   email: string;
-  username: string;
-  verified: boolean;
+  id: number;
+  keys?: Key[];
   last_login_at: string;
-  salt: string;
   password: string;
   plan?: Plan;
-  keys?: Key[];
+  salt: string;
+  stripe_cid?: string;
+  username: string;
   verification?: Verification;
+  verified: boolean;
 };
 
 export type Plan = {
   id: number;
-  stripe_pid?: string;
+  limit_per_day: number;
+  limit_per_minute: number;
+  limit_per_month: number;
+  limit_per_second: number;
+  price_annually: number;
+  price_monthly: number;
   stripe_mpid?: string;
+  stripe_pid?: string;
   stripe_ypid?: string;
   title: string;
-  limit_per_second: number;
-  limit_per_minute: number;
-  limit_per_day: number;
-  limit_per_month: number;
-  price_monthly: number;
-  price_annually: number;
 };
 
 export type Key = {
+  created_at: string;
   id: number;
   name: string;
   token: number;
-  created_at: string;
   updated_at: string;
   user?: User;
 };
 
 export type Verification = {
+  code: string;
+  created_at: string;
+  email: string;
+  expires_at: string;
   id: number;
   type: VerificationKind;
-  email: string;
-  code: string;
-  expires_at: string;
-  created_at: string;
   user?: User;
 };
 

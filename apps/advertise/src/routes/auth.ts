@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import auth from '#services/auth';
-import validator from '#middlewares/validator';
+
 import schema from '#libs/schema/auth';
+import validator from '#middlewares/validator';
+import auth from '#services/auth';
 
 const route = Router();
 
 const routes = (app: Router) => {
-  app.use('/', route);  
+  app.use('/', route);
 
   route.post('/login', validator(schema.login), auth.login);
   route.post('/register', validator(schema.register), auth.register);

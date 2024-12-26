@@ -1,24 +1,24 @@
 import { Job } from 'bullmq';
 
+import { resetMail, updateMail, verifyMail } from '#libs/mailer';
 import { VerificationKind } from '#types/enums';
-import { verifyMail, resetMail, updateMail } from '#libs/mailer';
 
 const emailJob = async (job: Job) => {
   switch (job.name) {
     case VerificationKind.VERIFY_EMAIL:
       return await verifyMail({
-        email: job.data.email,
         code: job.data.code,
+        email: job.data.email,
       });
     case VerificationKind.RESET_PASSWORD:
       return await resetMail({
-        email: job.data.email,
         code: job.data.code,
+        email: job.data.email,
       });
     case VerificationKind.UPDATE_EMAIL:
       return await updateMail({
-        email: job.data.email,
         code: job.data.code,
+        email: job.data.email,
         old_email: job.data.old_email,
       });
 

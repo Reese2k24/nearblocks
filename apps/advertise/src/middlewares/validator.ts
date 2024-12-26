@@ -9,7 +9,7 @@ const validator = <T extends ZodTypeAny>(schema: T) => {
     req: RequestValidators<typeof schema>,
     res: Response,
     next: NextFunction,
-  ): void | Promise<void> => {
+  ): Promise<void> | void => {
     const result = schema.safeParse(
       merge(req.body ?? {}, req.query ?? {}, req.params ?? {}),
     );

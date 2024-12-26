@@ -2,29 +2,29 @@ import nodemailer from 'nodemailer';
 
 import config from '#config';
 import reset from '#libs/templates/reset';
-import verify from '#libs/templates/verify';
 import updateEmail from '#libs/templates/updateEmail';
+import verify from '#libs/templates/verify';
 
 export type VerifyData = {
-  email: string;
   code: string;
+  email: string;
   subject?: string;
 };
 
 export type UpdateEmailData = {
-  old_email: string;
-  email: string;
   code: string;
+  email: string;
+  old_email: string;
   subject?: string;
 };
 
 const mailer = nodemailer.createTransport({
+  auth: {
+    pass: config.smtpPass,
+    user: config.smtpUser,
+  },
   host: config.smtpHost,
   port: config.smtpPort,
-  auth: {
-    user: config.smtpUser,
-    pass: config.smtpPass,
-  },
 });
 
 export const verifyMail = async (data: VerifyData) => {
@@ -32,9 +32,9 @@ export const verifyMail = async (data: VerifyData) => {
   data.subject = subject;
   const message = {
     from: config.smtpMail,
-    to: data.email,
-    subject,
     html: verify(data),
+    subject,
+    to: data.email,
   };
 
   return mailer.sendMail(message);
@@ -45,9 +45,9 @@ export const resetMail = async (data: VerifyData) => {
   data.subject = subject;
   const message = {
     from: config.smtpMail,
-    to: data.email,
-    subject,
     html: reset(data),
+    subject,
+    to: data.email,
   };
 
   return mailer.sendMail(message);
@@ -58,9 +58,9 @@ export const updateMail = async (data: UpdateEmailData) => {
   data.subject = subject;
   const message = {
     from: config.smtpMail,
-    to: data.email,
-    subject,
     html: updateEmail(data),
+    subject,
+    to: data.email,
   };
 
   return mailer.sendMail(message);

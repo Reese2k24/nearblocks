@@ -12,9 +12,9 @@ const sign = (user: User, remember = false) => {
 
   return jwt.sign(
     {
+      exp,
       id: user.id,
       username: user.username,
-      exp,
     },
     config.jwtSecret,
   );

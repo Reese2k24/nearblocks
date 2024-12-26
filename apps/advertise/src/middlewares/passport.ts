@@ -1,14 +1,19 @@
 import passport from 'passport';
-import { Strategy, ExtractJwt, StrategyOptions } from 'passport-jwt';
+import {
+  ExtractJwt,
+  Strategy as JwtStrategy,
+  StrategyOptions,
+} from 'passport-jwt';
 
 import config from '#config';
 import { jwtVerify } from '#services/passport';
 
 const jwtOptions: StrategyOptions = {
-  secretOrKey: config.jwtSecret,
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: config.jwtSecret,
 };
 
-export const jwtStrategy = new Strategy(jwtOptions, jwtVerify);
+const jwtStrategy = new JwtStrategy(jwtOptions, jwtVerify);
+passport.use('jwt', jwtStrategy);
 
 export const jwtAuth = passport.authenticate('jwt', { session: false });

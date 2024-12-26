@@ -1,11 +1,7 @@
-// import crypto from 'node:crypto';
-
-// import { v4 } from 'uuid';
-
-import { ValidationError } from '#types/types';
 import db from '#libs/db';
-import Sentry from '#libs/sentry';
 import logger from '#libs/logger';
+import Sentry from '#libs/sentry';
+import { ValidationError } from '#types/types';
 
 export const getPagination = (page = 1, perPage = 25) => {
   return {
@@ -14,10 +10,14 @@ export const getPagination = (page = 1, perPage = 25) => {
   };
 };
 
-export const keyBinder = (raw: string, bindings: any, format = false) => {
+export const keyBinder = (
+  raw: string,
+  bindings: Record<string, number | string>,
+  format = false,
+) => {
   let index = 0;
-  const values: any[] = [];
-  const params: any[] = [];
+  const values: (number | string)[] = [];
+  const params: string[] = [];
   const regex = /:(\w+)/g;
 
   let query = raw.replace(regex, function (match, group) {
@@ -50,19 +50,11 @@ export const keyBinder = (raw: string, bindings: any, format = false) => {
 export const validationErrors = (errors: ValidationError[]) => {
   return {
     errors: errors.map((error) => ({
-      path: [error.path],
       message: error.message,
+      path: [error.path],
     })),
   };
 };
-
-// export const generateApiKey = () => {
-//   const apiKey = v4({
-//     random: crypto.randomBytes(16),
-//   });
-
-//   return apiKey.toUpperCase().replace(/-/g, '');
-// };
 
 export const getFreePlan = async () => {
   const { rows } = await db.query(
