@@ -26,6 +26,7 @@ export type Config = {
   smtpPass: string;
   smtpPort: number;
   smtpUser: string;
+  adminUsername: string;
 };
 
 export type Campaign = {

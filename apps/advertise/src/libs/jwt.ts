@@ -10,11 +10,14 @@ const sign = (user: User, remember = false) => {
     .add(1, remember ? 'week' : 'hour')
     .unix();
 
+  const role = user.username === config.adminUsername ? 'publisher' : 'advertiser';
+
   return jwt.sign(
     {
       exp,
-      id: user.id,
+      sub: user.id,
       username: user.username,
+      role: role,
     },
     config.jwtSecret,
   );

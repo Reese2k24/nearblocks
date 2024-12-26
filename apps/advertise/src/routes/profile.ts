@@ -10,19 +10,19 @@ const route = Router();
 const routes = (app: Router) => {
   app.use('/', route);
 
-  route.get('/profile', jwtAuth, profile.info);
+  route.get('/users/me', jwtAuth, profile.info);
 
-  route.post('/profile/email', jwtAuth, validator(schema.email), profile.email);
+  route.post('/users/me/email', jwtAuth, validator(schema.email), profile.email);
   route.patch(
-    '/profile/password',
+    '/users/me/password',
     jwtAuth,
     validator(schema.password),
     profile.password,
   );
-  route.delete('/profile', jwtAuth, validator(schema.destroy), profile.destroy);
+  route.delete('/users/me', jwtAuth, validator(schema.destroy), profile.destroy);
 
   route.patch(
-    '/profile/email',
+    '/users/me/email',
     validator(schema.updateEmail),
     profile.updateEmail,
   );

@@ -18,6 +18,7 @@ const env = cleanEnv(process.env, {
   SMTP_PASS: str(),
   SMTP_PORT: num(),
   SMTP_USER: str(),
+  ADMIN_USERNAME: str({ default: '' }),
 });
 
 const config: Config = {
@@ -37,6 +38,7 @@ const config: Config = {
   smtpPass: env.SMTP_PASS,
   smtpPort: env.SMTP_PORT,
   smtpUser: env.SMTP_USER,
+  adminUsername: env.ADMIN_USERNAME,
 };
 
 export default config;
