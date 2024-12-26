@@ -147,7 +147,7 @@ const verify = (data: VerifyData) =>
     </table></td>
     </tr>
     <tr>
-    <td align="left" bgcolor="#ffffff" style="Margin:0;padding-top:10px;padding-bottom:10px;padding-left:20px;padding-right:20px;background-color:#ffffff">
+    <td align="left" bgcolor="#ffffff" style="Margin:0;padding-top:20px;padding-bottom:10px;padding-left:20px;padding-right:20px;background-color:#ffffff">
     <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
     <tr>
     <td align="center" valign="top" style="padding:0;Margin:0;width:560px">

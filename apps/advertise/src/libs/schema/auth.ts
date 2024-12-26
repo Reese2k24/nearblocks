@@ -32,12 +32,10 @@ const verify = z.object({
 });
 
 const login = z.object({
-  username: z
+  username_or_email: z
     .string()
     .trim()
-    .min(5)
-    .max(30)
-    .regex(/^[a-z0-9]+$/i, 'Invalid username'),
+    .min(5),
   password: z.string().trim().min(8).max(100),
   remember: z.boolean().optional(),
 });

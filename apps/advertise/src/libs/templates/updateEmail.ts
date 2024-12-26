@@ -147,13 +147,19 @@ const updateEmail = (data: UpdateEmailData) =>
     </table></td>
     </tr>
     <tr>
-    <td align="left" bgcolor="#ffffff" style="Margin:0;padding-top:10px;padding-bottom:10px;padding-left:20px;padding-right:20px;background-color:#ffffff">
+    <td align="left" bgcolor="#ffffff" style="Margin:0;padding-top:20px;padding-bottom:10px;padding-left:20px;padding-right:20px;background-color:#ffffff">
     <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
     <tr>
     <td align="center" valign="top" style="padding:0;Margin:0;width:560px">
     <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
     <tr>
-    <td align="center" style="padding:0;Margin:0"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#4b5563;font-size:14px"><a target="_blank" href="https://nearblocks.io/updateemail?email=${data.email}&code=${data.code}" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#175354;font-size:16px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif">https://nearblocks.io/updateemail?email=${data.email}&code=${data.code}</a></p></td>
+     <td align="center" style="padding:0;Margin:0">
+        <a href="https://nearblocks.io/updateemail?email=${data.email}&code=${data.code}" 
+           target="_blank" 
+           style="display: inline-block; background-color: #175354; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-family: roboto, 'helvetica neue', helvetica, arial, sans-serif; font-size: 16px; font-weight: bold;">
+           Confirm Email
+        </a>
+    </td>   
     </tr>
     </table></td>
     </tr>

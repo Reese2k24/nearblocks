@@ -16,7 +16,9 @@
     "format:check": "prettier --config .prettierrc --check --ignore-unknown './**/*'",
     "prepare": "husky install"
   },
-  "dependencies": {},
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  },
   "devDependencies": {
     "eslint-config-custom-nextjs": "*",
     "eslint-config-custom-node": "*",

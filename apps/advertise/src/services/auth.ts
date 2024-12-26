@@ -24,7 +24,7 @@ import { VerificationKind } from '#types/enums';
 
 const login = catchAsync(
   async (req: RequestValidator<Login>, res: Response) => {
-    const username = req.validator.data.username;
+    const username_or_email = req.validator.data.username_or_email;
     const password = req.validator.data.password;
     const remember = req.validator.data.remember;
     const date = dayjs.utc().toISOString();
@@ -36,9 +36,9 @@ const login = catchAsync(
         FROM
           api__users
         WHERE
-          username = :username
+          username = :username_or_email OR email = :username_or_email
       `,
-      { username },
+      { username_or_email },
     );
 
     const { rows } = await db.query(userQuery.query, userQuery.values);
@@ -47,7 +47,7 @@ const login = catchAsync(
     if (!user)
       return res.status(422).json(
         validationErrors([
-          { path: 'email', message: 'Invalid username or password' },
+          { path: 'username_or_email', message: 'Invalid username or email' },
           { path: 'password', message: 'Invalid username or password' },
         ]),
       );
@@ -55,7 +55,7 @@ const login = catchAsync(
     if (!hash.verify(password, user.salt, user.password))
       return res.status(422).json(
         validationErrors([
-          { path: 'email', message: 'Invalid username or password' },
+          { path: 'username_or_email', message: 'Invalid username or password' },
           { path: 'password', message: 'Invalid username or password' },
         ]),
       );
@@ -372,34 +372,39 @@ const forgot = catchAsync(
         .status(422)
         .json(validationErrors([{ path: 'email', message: 'Invalid email' }]));
 
-    if (user.verifications?.length)
-      return res.status(400).json({ message: 'Forgot request already exists' });
+    let code: string;
 
-    const code = crypto.randomBytes(8).toString('hex');
-    const verifyQuery = keyBinder(
-      `
-        INSERT INTO
-          api__verifications(
-            user_id,
-            type,
-            email,
-            code,
-            created_at,
-            expires_at
+    if (user.verifications?.length) {
+      code = user.verifications[0].code;
+    } else {
+      code = crypto.randomBytes(8).toString('hex');
+      const verifyQuery = keyBinder(
+        `
+          INSERT INTO
+            api__verifications(
+              user_id,
+              type,
+              email,
+              code,
+              created_at,
+              expires_at
+            )
+          VALUES(
+            :user,
+            :type,
+            :email,
+            :code,
+            :date,
+            :expires
           )
-        VALUES(
-          :user,
-          :type,
-          :email,
-          :code,
-          :date,
-          :expires
-        )
-      `,
-      { user: user.id, type, email, code, date, expires },
-    );
+        `,
+        { user: user.id, type, email, code, date, expires },
+      );
 
-    await db.query(verifyQuery.query, verifyQuery.values);
+      await db.query(verifyQuery.query, verifyQuery.values);
+
+    }
+
     await emailQueue.add(type, { email, code });
 
     return res.status(200).end();
