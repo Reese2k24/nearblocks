@@ -3,6 +3,7 @@ import { cleanEnv, num, str } from 'envalid';
 import { Config } from '#types/types';
 
 const env = cleanEnv(process.env, {
+  ADMIN_USERNAME: str({ default: '' }),
   API_URL: str({ default: 'https://api.exploreblocks.io/api' }),
   AWS_URL: str(),
   DATABASE_URL: str(),
@@ -18,10 +19,10 @@ const env = cleanEnv(process.env, {
   SMTP_PASS: str(),
   SMTP_PORT: num(),
   SMTP_USER: str(),
-  ADMIN_USERNAME: str({ default: '' }),
 });
 
 const config: Config = {
+  adminUsername: env.ADMIN_USERNAME,
   apiUrl: env.API_URL,
   awsUrl: env.AWS_URL,
   dbUrl: env.DATABASE_URL,
@@ -38,7 +39,6 @@ const config: Config = {
   smtpPass: env.SMTP_PASS,
   smtpPort: env.SMTP_PORT,
   smtpUser: env.SMTP_USER,
-  adminUsername: env.ADMIN_USERNAME,
 };
 
 export default config;

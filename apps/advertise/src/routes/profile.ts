@@ -12,14 +12,24 @@ const routes = (app: Router) => {
 
   route.get('/users/me', jwtAuth, profile.info);
 
-  route.post('/users/me/email', jwtAuth, validator(schema.email), profile.email);
+  route.post(
+    '/users/me/email',
+    jwtAuth,
+    validator(schema.email),
+    profile.email,
+  );
   route.patch(
     '/users/me/password',
     jwtAuth,
     validator(schema.password),
     profile.password,
   );
-  route.delete('/users/me', jwtAuth, validator(schema.destroy), profile.destroy);
+  route.delete(
+    '/users/me',
+    jwtAuth,
+    validator(schema.destroy),
+    profile.destroy,
+  );
 
   route.patch(
     '/users/me/email',

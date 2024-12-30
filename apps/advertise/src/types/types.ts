@@ -10,6 +10,7 @@ export interface RequestValidators<T> extends Request {
 export type RequestValidator<T> = Required<RequestValidators<T>>;
 
 export type Config = {
+  adminUsername: string;
   apiUrl: string;
   awsUrl: string;
   dbUrl: string;
@@ -26,7 +27,6 @@ export type Config = {
   smtpPass: string;
   smtpPort: number;
   smtpUser: string;
-  adminUsername: string;
 };
 
 export type Campaign = {

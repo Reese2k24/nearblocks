@@ -50,7 +50,18 @@ const login = catchAsync(
         ]),
       );
 
-    if (!hash.verify(password, user.salt, user.password))
+    let isPasswordValid = false;
+
+    if (user.password.startsWith('$2y$')) {
+      return res.status(422).json({
+        message:
+          'Password mismatch. Please update your password using the forgot password link.',
+      });
+    } else {
+      isPasswordValid = hash.verify(password, user.salt, user.password);
+    }
+
+    if (!isPasswordValid)
       return res.status(422).json(
         validationErrors([
           {
