@@ -13,7 +13,7 @@ export const jwtVerify: VerifyCallback = async (payload, done) => {
       WHERE
         id = :id
     `,
-    { id: payload.id },
+    { id: payload.sub },
   );
 
   const { rows } = await db.query(query, values);

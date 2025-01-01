@@ -6,6 +6,7 @@ import catchAsync from '#libs/async';
 import dayjs from '#libs/dayjs';
 import db from '#libs/db';
 import hash from '#libs/hash';
+import jwt from '#libs/jwt';
 import { emailQueue } from '#libs/queue';
 import { stats } from '#libs/rateLimiter';
 import { Destroy, Email, Password, UpdateEmail } from '#libs/schema/profile';
@@ -246,7 +247,9 @@ const updateEmail = catchAsync(
       client.release();
     }
 
-    return res.status(200).end();
+    const token = jwt.sign(verify, true).toString();
+
+    return res.status(200).json({ token });
   },
 );
 

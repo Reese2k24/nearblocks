@@ -53,11 +53,18 @@ const reset = z
     path: ['confirm_password'],
   });
 
+const walletlogin = z.object({
+  accountId: z.string(),
+  public_key: z.string(),
+  signature: z.string(),
+});
+
 export type Register = z.infer<typeof register>;
 export type Resend = z.infer<typeof resend>;
 export type Verify = z.infer<typeof verify>;
 export type Login = z.infer<typeof login>;
 export type Forgot = z.infer<typeof forgot>;
+export type walletlogin = z.infer<typeof walletlogin>;
 export type Reset = z.infer<typeof reset>;
 
-export default { forgot, login, register, resend, reset, verify };
+export default { forgot, login, register, resend, reset, verify, walletlogin };

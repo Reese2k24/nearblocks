@@ -338,7 +338,9 @@ const verify = catchAsync(
       client.release();
     }
 
-    return res.status(200).end();
+    const token = jwt.sign(user, true).toString();
+
+    return res.status(200).json({ token });
   },
 );
 
